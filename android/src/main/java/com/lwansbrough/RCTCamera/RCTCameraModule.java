@@ -292,6 +292,10 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
         cm.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
         mMediaRecorder.setProfile(cm);
 
+        mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoEncodingBitRate(800 * 1000);
+        mMediaRecorder.setAudioEncodingBitRate(96 * 1000);
+
         // Set video output file.
         mVideoFile = null;
         switch (options.getInt("target")) {
@@ -386,15 +390,17 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
             // Stop recording video.
             try {
                 mMediaRecorder.stop(); // stop the recording
+
+                // Optionally, remove the configuration settings from the recorder.
+                mMediaRecorder.reset();
+
+
+                // Release the MediaRecorder.
+                mMediaRecorder.release();
             } catch (RuntimeException ex) {
                 Log.e(TAG, "Media recorder stop error.", ex);
             }
 
-            // Optionally, remove the configuration settings from the recorder.
-            mMediaRecorder.reset();
-
-            // Release the MediaRecorder.
-            mMediaRecorder.release();
 
             // Reset variable.
             mMediaRecorder = null;
